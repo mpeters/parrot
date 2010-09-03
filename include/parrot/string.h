@@ -45,7 +45,7 @@
 #define STRING_find_cclass(interp, flags, src, offset, count) ((src)->encoding)->find_cclass((interp), (flags), (src), (offset), (count))
 #define STRING_find_not_cclass(interp, flags, src, offset, count) ((src)->encoding)->find_not_cclass((interp), (flags), (src), (offset), (count))
 
-#define STRING_get_grapemes(interp, src, offset, count) ((src)->encoding)->get_graphemes((interp), (src), (offset), (count))
+#define STRING_get_graphemes(interp, src, offset, count) ((src)->encoding)->get_graphemes((interp), (src), (offset), (count))
 #define STRING_compose(interp, src) ((src)->encoding)->compose((interp), (src))
 #define STRING_decompose(interp, src) ((src)->encoding)->decompose((interp), (src))
 
