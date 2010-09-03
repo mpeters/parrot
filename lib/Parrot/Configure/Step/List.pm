@@ -39,6 +39,7 @@ my @steps = qw(
     auto::isreg
     auto::jit
     auto::frames
+    auto::llvm
     auto::inline
     auto::gc
     auto::memalign
