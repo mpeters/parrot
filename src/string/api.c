@@ -3134,108 +3134,39 @@ STRING*
 Parrot_str_join(PARROT_INTERP, ARGIN_NULLOK(STRING *j), ARGIN(PMC *ar))
 {
     ASSERT_ARGS(Parrot_str_join)
-    PMC      *chunks;
-    STRING   *res;
-    STRING   *s;
-    char     *pos;
-    const int ar_len       = VTABLE_elements(interp, ar);
-    int       total_length = 0;
-    int       transcoded   = 0;
-    int       i;
 
-    if (ar_len == 0)
-        return Parrot_str_new_noinit(interp, enum_stringrep_one, 0);
+    if (STRING_IS_NULL(j)) {
+        PMC *sb = Parrot_pmc_new_init(interp, enum_class_StringBuilder, ar);
+        return VTABLE_get_string(interp, sb);
+    }
+    else {
+        PMC      *sb;
+        STRING   *first;
+        const int count = VTABLE_elements(interp, ar);
+        INTVAL    length, j_length;
+        int       i;
 
-    if (STRING_IS_NULL(j))
-        j = Parrot_str_new_noinit(interp, enum_stringrep_one, 0);
+        if (count == 0)
+            return Parrot_str_new_noinit(interp, enum_stringrep_one, 0);
 
-    chunks = Parrot_pmc_new_init_int(interp, enum_class_FixedStringArray,
-        ar_len);
+        first    = VTABLE_get_string_keyed_int(interp, ar, 0);
+        length   = Parrot_str_byte_length(interp, first);
+        j_length = Parrot_str_byte_length(interp, j);
 
-    for (i = 0; i < ar_len; ++i) {
-        STRING *next = VTABLE_get_string_keyed_int(interp, ar, i);
+        /* it's an approximiation, but it doesn't hurt */
+        sb       = Parrot_pmc_new_init_int(interp, enum_class_StringBuilder,
+                    (length + j_length) * count);
 
-        if (STRING_IS_NULL(next))
-            continue;
+        VTABLE_push_string(interp, sb, first);
 
-        if (!transcoded && next->encoding != j->encoding) {
-            const STR_VTABLE *enc = string_rep_compatible(interp, next, j);
-
-            if (!enc) {
-                if (j->encoding != Parrot_utf8_encoding_ptr)
-                    j = Parrot_utf8_encoding_ptr->to_encoding(interp, j);
-
-                transcoded = 1;
-            }
-            else if (enc != j->encoding) {
-                j = enc->to_encoding(interp, j);
-
-                if (STRING_max_bytes_per_codepoint(j) != 1)
-                    transcoded = 1;
-            }
+        for (i = 1; i < count; ++i) {
+            VTABLE_push_string(interp, sb, j);
+            VTABLE_push_string(interp, sb,
+                VTABLE_get_string_keyed_int(interp, ar, i));
         }
 
-        VTABLE_set_string_keyed_int(interp, chunks, i, next);
-
-        total_length += next->bufused;
+        return VTABLE_get_string(interp, sb);
     }
-
-    /* with the right charset, transcode any strings if necessary */
-    if (transcoded) {
-        const STR_VTABLE *enc = j->encoding;
-
-        for (i = 0; i < ar_len; ++i) {
-            STRING *s = VTABLE_get_string_keyed_int(interp, chunks, i);
-
-            if (STRING_IS_NULL(s))
-                continue;
-
-            if (s->encoding != enc) {
-                STRING *new_s = enc->to_encoding(interp, s);
-                VTABLE_set_string_keyed_int(interp, chunks, i, new_s);
-                total_length += new_s->bufused - s->bufused;
-            }
-        }
-    }
-
-    /* add the length of the separator, now that it's transcoded */
-    total_length += j->bufused * ar_len;
-
-    res = Parrot_gc_new_string_header(interp, 0);
-    Parrot_gc_allocate_string_storage(interp, res, total_length);
-
-    res->encoding = j->encoding;
-
-    /* Iterate over chunks and append it to res */
-    pos = res->strstart;
-
-    /* Copy first chunk */
-    s = VTABLE_get_string_keyed_int(interp, chunks, 0);
-    if (!STRING_IS_NULL(s)) {
-        mem_sys_memcopy(pos, s->strstart, s->bufused);
-        pos += s->bufused;
-    }
-
-    for (i = 1; i < ar_len; ++i) {
-        STRING *next = VTABLE_get_string_keyed_int(interp, chunks, i);
-
-        if (STRING_IS_NULL(next))
-            continue;
-
-        mem_sys_memcopy(pos, j->strstart, j->bufused);
-        pos += j->bufused;
-
-        mem_sys_memcopy(pos, next->strstart, next->bufused);
-        pos += next->bufused;
-
-        /* We can consume all buffer and pos will be next-after-end of buffer */
-        PARROT_ASSERT(pos <= res->strstart + Buffer_buflen(res) + 1);
-    }
-
-    res->bufused = pos - res->strstart;
-    res->strlen  = STRING_scan(interp, res);
-
-    return res;
 }
 
 
