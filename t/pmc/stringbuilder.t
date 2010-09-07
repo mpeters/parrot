@@ -20,7 +20,7 @@ Tests the C<StringBuilder> PMC.
 .sub 'main' :main
     .include 'test_more.pir'
 
-    test_create()               # 2 tests
+    test_create()               # 3 tests
     test_init_pmc()
     test_push_string()
     test_push_pmc()             # 4 tests
@@ -37,6 +37,7 @@ Tests the C<StringBuilder> PMC.
     emit_with_pos_and_named_args()
 
     test_unicode_conversion_tt1665()
+    test_encodings()
 
     done_testing()
 
@@ -54,6 +55,12 @@ Tests the C<StringBuilder> PMC.
     $S0 = sb
     is( $S0, '', '... with empty content')
 
+    .local pmc ar
+    ar = new ['FixedStringArray']
+    sb = new ['StringBuilder'], ar
+    $I0 = isnull sb
+    not $I0
+    ok( $I0, 'StringBuilder created from empty array' )
 .end
 
 .sub 'test_push_string'
@@ -70,9 +77,6 @@ Tests the C<StringBuilder> PMC.
 
     is( $S0, "foo", "... without clobbering first string")
 
-    $I0 = sb
-    is( $I0, 128, "... and capacity still 128" )
-
     $I0 = sb.'get_string_length'()
     is( $I0, 6,   "... and string length is correct")
 
@@ -84,18 +88,12 @@ Tests the C<StringBuilder> PMC.
     $S1 = sb
     is( $S0, $S1, "Push 128 chars string works")
 
-    $I0 = sb
-    is( $I0, 256, "... and capacity increased" )
-
     $S99 = repeat "x", 1000
     push sb, $S99
 
     $S0 = concat $S0, $S99
     $S1 = sb
     is( $S0, $S1, "Push 1000 chars string works")
-
-    $I0 = sb
-    is( $I0, 2048, "... and capacity increased" )
 
     $S99 = repeat "x", 12000
     push sb, $S99
@@ -104,13 +102,11 @@ Tests the C<StringBuilder> PMC.
     $S1 = sb
     is( $S0, $S1, "Push 10000 chars string works")
 
-    $I0 = sb
-    is( $I0, 16384, "... and capacity increased" )
+    null $S99
+    push sb, $S99
 
-    null $S0
-    push sb, $S0
-    $I0 = sb
-    is( $I0, 16384, "push a null string does nothing" )
+    $S1 = sb
+    is( $S0, $S1, "push a null string does nothing" )
 .end
 
 .sub 'test_push_pmc'
@@ -331,6 +327,19 @@ CODE
     sb  = new ["StringBuilder"], ar
     $S0 = sb
     is( $S0, $S1, 'init_pmc() should join all passed strings' )
+.end
+
+.sub 'test_encodings'
+    .local pmc sb
+    sb  = new ["StringBuilder"]
+
+    push sb, "foo"
+    push sb, iso-8859-1:"\x{E4}\x{F6}\x{FC}"
+    push sb, utf8:unicode:"БДЖ"
+    push sb, "bar"
+
+    $S0 = sb
+    is( $S0, utf8:unicode:"fooäöüБДЖbar", 'push strings with different encodings' )
 .end
 
 # Local Variables:

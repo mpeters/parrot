@@ -227,7 +227,7 @@ Parrot_str_new_noinit(PARROT_INTERP,
 =item C<static const STR_VTABLE * string_rep_compatible(PARROT_INTERP, const
 STRING *a, const STRING *b)>
 
-Find the "lowest" possible charset and encoding for the given string. E.g.
+Find the "lowest" possible encoding for the given string. E.g.
 
   ascii <op> utf8 => utf8
                   => ascii, B<if> C<STRING *b> has ascii chars only.
@@ -289,7 +289,7 @@ string_rep_compatible(SHIM_INTERP,
 =item C<const STR_VTABLE * Parrot_str_rep_compatible(PARROT_INTERP, const STRING
 *a, const STRING *b)>
 
-Find the "lowest" possible charset and encoding for the given string. E.g.
+Find the "lowest" possible encoding for the given string. E.g.
 
   ascii <op> utf8 => utf8
                   => ascii, B<if> C<STRING *b> has ascii chars only.
@@ -331,18 +331,16 @@ Parrot_str_clone(PARROT_INTERP, ARGIN(const STRING *s))
     const size_t alloc_size = s->bufused;
     STRING * const result = Parrot_gc_new_string_header(interp, 0);
 
-    /* Copy encoding/charset/etc */
-    STRUCT_COPY(result, s);
-
-    /* Clear COW flag. We own buffer */
-    PObj_get_FLAGS(result)  = PObj_is_string_FLAG
-                            | PObj_is_COWable_FLAG;
-
     /* Allocate new chunk of memory */
     Parrot_gc_allocate_string_storage(interp, result, alloc_size);
 
     /* and copy it over */
     mem_sys_memcopy(result->strstart, s->strstart, alloc_size);
+
+    result->strlen   = s->strlen;
+    result->bufused  = s->bufused;
+    result->hashval  = s->hashval;
+    result->encoding = s->encoding;
 
     return result;
 }
@@ -608,7 +606,7 @@ const char *encoding_name, UINTVAL flags)>
 Creates and returns a new Parrot string using C<len> bytes of string data read
 from C<buffer>.
 
-The value of C<charset_name> specifies the string's representation.
+The value of C<encoding_name> specifies the string's representation.
 The currently recognised values are:
 
     'iso-8859-1'
@@ -619,7 +617,7 @@ The currently recognised values are:
 The encoding is implicitly guessed; C<unicode> implies the C<utf-8> encoding,
 and the other three assume C<fixed-8> encoding.
 
-If C<charset> is unspecified, the default charset 'ascii' will be used.
+If C<encoding_name> is unspecified, the default encoding 'ascii' will be used.
 
 The value of C<flags> is optionally one or more C<PObj_*> flags C<OR>-ed
 together.
@@ -1196,7 +1194,7 @@ Parrot_str_replace(PARROT_INTERP, ARGIN(const STRING *src),
     if (!enc) {
         src = Parrot_utf16_encoding_ptr->to_encoding(interp, src);
         rep = Parrot_utf16_encoding_ptr->to_encoding(interp, rep);
-        /* Remember selected charset and encoding */
+        /* Remember selected encoding */
         enc = src->encoding;
     }
 
@@ -1220,7 +1218,7 @@ Parrot_str_replace(PARROT_INTERP, ARGIN(const STRING *src),
     /* Now do the replacement */
     dest = Parrot_gc_new_string_header(interp, 0);
 
-    /* Set encoding and charset to compatible */
+    /* Set encoding to compatible */
     dest->encoding = enc;
 
     /* Clear COW flag. We own buffer */
@@ -1442,7 +1440,7 @@ Parrot_str_bitwise_and(PARROT_INTERP, ARGIN_NULLOK(const STRING *s1),
     STRING *res;
     size_t  minlen;
 
-    /* we could also trans_charset to iso-8859-1 */
+    /* we could also trans_encoding to iso-8859-1 */
     if (s1 && STRING_max_bytes_per_codepoint(s1) != 1)
         Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_INVALID_ENCODING,
             "string bitwise_and (%s/%s) unsupported",
@@ -2539,8 +2537,7 @@ const STR_VTABLE *encoding, UINTVAL flags)>
 
 EXPERIMENTAL, see TT #1628
 
-Unescapes the src string returnning a new string with the charset
-and encoding specified.
+Unescapes the src string returnning a new string with the encoding specified.
 
 
 =cut
@@ -3055,8 +3052,7 @@ Parrot_str_change_charset(PARROT_INTERP, ARGMOD_NULLOK(STRING *src),
 =item C<STRING* Parrot_str_change_encoding(PARROT_INTERP, STRING *src, INTVAL
 encoding_nr)>
 
-Converts C<src> to the given charset or encoding and returns the result as a
-new string.
+Converts C<src> to the given encoding and returns the result as a new string.
 
 =cut
 
