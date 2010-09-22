@@ -22761,84 +22761,84 @@ return (opcode_t *)cur_opcode + 6;}
 opcode_t *
 Parrot_index_i_s_s(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (SREG(2) && SREG(3)) ? Parrot_str_find_index(interp, SREG(2), SREG(3), 0) : -1;
+    IREG(1) = (SREG(2) && SREG(3)) ? STRING_index(interp, SREG(2), SREG(3), 0) : -1;
 
 return (opcode_t *)cur_opcode + 4;}
 
 opcode_t *
 Parrot_index_i_sc_s(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (CONST(2).u.string && SREG(3)) ? Parrot_str_find_index(interp, CONST(2).u.string, SREG(3), 0) : -1;
+    IREG(1) = (CONST(2).u.string && SREG(3)) ? STRING_index(interp, CONST(2).u.string, SREG(3), 0) : -1;
 
 return (opcode_t *)cur_opcode + 4;}
 
 opcode_t *
 Parrot_index_i_s_sc(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (SREG(2) && CONST(3).u.string) ? Parrot_str_find_index(interp, SREG(2), CONST(3).u.string, 0) : -1;
+    IREG(1) = (SREG(2) && CONST(3).u.string) ? STRING_index(interp, SREG(2), CONST(3).u.string, 0) : -1;
 
 return (opcode_t *)cur_opcode + 4;}
 
 opcode_t *
 Parrot_index_i_sc_sc(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (CONST(2).u.string && CONST(3).u.string) ? Parrot_str_find_index(interp, CONST(2).u.string, CONST(3).u.string, 0) : -1;
+    IREG(1) = (CONST(2).u.string && CONST(3).u.string) ? STRING_index(interp, CONST(2).u.string, CONST(3).u.string, 0) : -1;
 
 return (opcode_t *)cur_opcode + 4;}
 
 opcode_t *
 Parrot_index_i_s_s_i(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (SREG(2) && SREG(3)) ? Parrot_str_find_index(interp, SREG(2), SREG(3), IREG(4)) : -1;
+    IREG(1) = (SREG(2) && SREG(3)) ? STRING_index(interp, SREG(2), SREG(3), IREG(4)) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
 opcode_t *
 Parrot_index_i_sc_s_i(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (CONST(2).u.string && SREG(3)) ? Parrot_str_find_index(interp, CONST(2).u.string, SREG(3), IREG(4)) : -1;
+    IREG(1) = (CONST(2).u.string && SREG(3)) ? STRING_index(interp, CONST(2).u.string, SREG(3), IREG(4)) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
 opcode_t *
 Parrot_index_i_s_sc_i(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (SREG(2) && CONST(3).u.string) ? Parrot_str_find_index(interp, SREG(2), CONST(3).u.string, IREG(4)) : -1;
+    IREG(1) = (SREG(2) && CONST(3).u.string) ? STRING_index(interp, SREG(2), CONST(3).u.string, IREG(4)) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
 opcode_t *
 Parrot_index_i_sc_sc_i(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (CONST(2).u.string && CONST(3).u.string) ? Parrot_str_find_index(interp, CONST(2).u.string, CONST(3).u.string, IREG(4)) : -1;
+    IREG(1) = (CONST(2).u.string && CONST(3).u.string) ? STRING_index(interp, CONST(2).u.string, CONST(3).u.string, IREG(4)) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
 opcode_t *
 Parrot_index_i_s_s_ic(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (SREG(2) && SREG(3)) ? Parrot_str_find_index(interp, SREG(2), SREG(3), cur_opcode[4]) : -1;
+    IREG(1) = (SREG(2) && SREG(3)) ? STRING_index(interp, SREG(2), SREG(3), cur_opcode[4]) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
 opcode_t *
 Parrot_index_i_sc_s_ic(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (CONST(2).u.string && SREG(3)) ? Parrot_str_find_index(interp, CONST(2).u.string, SREG(3), cur_opcode[4]) : -1;
+    IREG(1) = (CONST(2).u.string && SREG(3)) ? STRING_index(interp, CONST(2).u.string, SREG(3), cur_opcode[4]) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
 opcode_t *
 Parrot_index_i_s_sc_ic(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (SREG(2) && CONST(3).u.string) ? Parrot_str_find_index(interp, SREG(2), CONST(3).u.string, cur_opcode[4]) : -1;
+    IREG(1) = (SREG(2) && CONST(3).u.string) ? STRING_index(interp, SREG(2), CONST(3).u.string, cur_opcode[4]) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
 opcode_t *
 Parrot_index_i_sc_sc_ic(opcode_t *cur_opcode, PARROT_INTERP)  {
     const Parrot_Context * const CUR_CTX = Parrot_pcc_get_context_struct(interp, interp->ctx);
-    IREG(1) = (CONST(2).u.string && CONST(3).u.string) ? Parrot_str_find_index(interp, CONST(2).u.string, CONST(3).u.string, cur_opcode[4]) : -1;
+    IREG(1) = (CONST(2).u.string && CONST(3).u.string) ? STRING_index(interp, CONST(2).u.string, CONST(3).u.string, cur_opcode[4]) : -1;
 
 return (opcode_t *)cur_opcode + 5;}
 
