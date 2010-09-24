@@ -141,10 +141,11 @@ static size_t key_hash_cstring(SHIM_INTERP,
 PARROT_WARN_UNUSED_RESULT
 PARROT_PURE_FUNCTION
 PARROT_INLINE
-static size_t key_hash_STRING(PARROT_INTERP, ARGMOD(STRING *s), size_t seed)
+static size_t key_hash_STRING(PARROT_INTERP,
+    ARGIN(const STRING *s),
+    size_t seed)
         __attribute__nonnull__(1)
-        __attribute__nonnull__(2)
-        FUNC_MODIFIES(*s);
+        __attribute__nonnull__(2);
 
 PARROT_CAN_RETURN_NULL
 static HashBucket * parrot_hash_get_bucket_string(PARROT_INTERP,
@@ -240,7 +241,8 @@ static void parrot_mark_hash_values(PARROT_INTERP, ARGIN(Hash *hash))
 
 /*
 
-=item C<static size_t key_hash_STRING(PARROT_INTERP, STRING *s, size_t seed)>
+=item C<static size_t key_hash_STRING(PARROT_INTERP, const STRING *s, size_t
+seed)>
 
 Returns the hashed value of the key C<value>.  See also string.c.
 
@@ -253,7 +255,7 @@ PARROT_WARN_UNUSED_RESULT
 PARROT_PURE_FUNCTION
 PARROT_INLINE
 static size_t
-key_hash_STRING(PARROT_INTERP, ARGMOD(STRING *s), size_t seed)
+key_hash_STRING(PARROT_INTERP, ARGIN(const STRING *s), size_t seed)
 {
     ASSERT_ARGS(key_hash_STRING)
 
