@@ -176,7 +176,7 @@ PARROT_WARN_UNUSED_RESULT
 static UINTVAL
 null_validate(PARROT_INTERP, ARGIN(const STRING *src))
 {
-    ASSERT_ARGS(ascii_validate)
+    ASSERT_ARGS(null_validate)
     return 1;
 }
 
