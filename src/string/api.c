@@ -776,8 +776,7 @@ Parrot_str_indexed(PARROT_INTERP, ARGIN(const STRING *s), INTVAL idx)
     ASSERT_ARGS(Parrot_str_indexed)
 
     if (s == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        s = STRINGNULL;
 
     return STRING_ord(interp, s, idx);
 }
@@ -809,8 +808,7 @@ Parrot_str_find_index(PARROT_INTERP, ARGIN(const STRING *src),
     ASSERT_ARGS(Parrot_str_find_index)
 
     if (src == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        src = STRINGNULL;
 
     return STRING_index(interp, src, search, start);
 }
@@ -835,8 +833,7 @@ string_ord(PARROT_INTERP, ARGIN(const STRING *s), INTVAL idx)
     ASSERT_ARGS(string_ord)
 
     if (s == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        s = STRINGNULL;
 
     return STRING_ord(interp, s, idx);
 }
@@ -985,8 +982,7 @@ Parrot_str_substr(PARROT_INTERP,
     ASSERT_ARGS(Parrot_str_substr)
 
     if (src == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        src = STRINGNULL;
 
     return STRING_substr(interp, src, offset, length);
 }
@@ -1271,8 +1267,7 @@ Parrot_str_compare(PARROT_INTERP, ARGIN_NULLOK(const STRING *s1), ARGIN_NULLOK(c
     ASSERT_ARGS(Parrot_str_compare)
 
     if (s1 == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        s1 = STRINGNULL;
 
     return STRING_compare(interp, s1, s2);
 }
@@ -1298,8 +1293,7 @@ Parrot_str_not_equal(PARROT_INTERP, ARGIN_NULLOK(const STRING *s1), ARGIN_NULLOK
     ASSERT_ARGS(Parrot_str_not_equal)
 
     if (s1 == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        s1 = STRINGNULL;
 
     return !STRING_equal(interp, s1, s2);
 }
@@ -1329,8 +1323,7 @@ Parrot_str_equal(PARROT_INTERP, ARGIN_NULLOK(const STRING *s1), ARGIN_NULLOK(con
     ASSERT_ARGS(Parrot_str_equal)
 
     if (s1 == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        s1 = STRINGNULL;
 
     return STRING_equal(interp, s1, s2);
 }
@@ -2242,8 +2235,7 @@ Parrot_str_to_hashval(PARROT_INTERP, ARGIN(const STRING *s))
     ASSERT_ARGS(Parrot_str_to_hashval)
 
     if (s == NULL)
-        Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_UNEXPECTED_NULL,
-            "Invalid operation on null string");
+        s = STRINGNULL;
 
     return STRING_hash(interp, s, interp->hash_seed);
 }
