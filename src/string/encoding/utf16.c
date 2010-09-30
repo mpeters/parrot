@@ -363,7 +363,7 @@ utf16_substr(PARROT_INTERP, ARGIN(const STRING *src), INTVAL offset, INTVAL leng
 #else
     UNUSED(src);
     UNUSED(offset);
-    UNUSED(count);
+    UNUSED(length);
 
     Parrot_ex_throw_from_c_args(interp, NULL, EXCEPTION_LIBRARY_ERROR,
         "no ICU lib loaded");
