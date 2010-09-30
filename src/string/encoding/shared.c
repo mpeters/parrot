@@ -371,6 +371,7 @@ C<offset> is the wrong offset into the string C<s>.
 void
 encoding_ord_error(PARROT_INTERP, ARGIN(const STRING *s), INTVAL offset)
 {
+    ASSERT_ARGS(encoding_ord_error)
     const UINTVAL len = STRING_length(s);
     const char   *err_msg;
 
